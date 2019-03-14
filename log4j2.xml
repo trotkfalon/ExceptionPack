@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/2002/xmlspec/dtd/2.10/xmlspec.dtd">
+<!--Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出。 -->
+<!-- monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数。 -->
+<configuration status="debug" monitorInterval="100">
+	<!--先定义所有的appender -->
+	<appenders>
+		<!--控制台输出 -->
+		<!--这个信息输出控制台的配置(信息打印) -->
+		<Console name="Console" target="SYSTEM_ERR">
+			<!--控制台只输出level及以上级别的信息 -->
+			<!--onMatch:DENY/ACCEPT(是否接受匹配) -->
+			<!--onMismatch:DENY/NEUTRAL(是否接受其他高于level的级别) -->
+			<ThresholdFilter level="debug" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<!--输出日志的格式 -->
+			<!-- 彩色打印 -->
+			<PatternLayout
+				pattern="%highlight{&lt;%-6t&gt;}%highlight{[%-6p]||}  %-12d %highlight{|\t\t\t\t\t\t\t\t\t\t——&gt;\t%-m &lt;————————————&gt;%x%n}%highlight{\t\t==  %l%n}" />
+			<!--黑白打印 -->
+			<!-- <PatternLayout pattern="&lt;%-6t&gt;[%-6p]|| %-12d{HH:mm:ss SSS} 
+				|\t\t\t\t\t\t\t\t——&gt;\t%-m &lt;————————————&gt;%x%n\t\t== %l%n" /> -->
+			<!-- 安装了ANSI，但是关闭的情况下，纯黑打印（解决中文乱码） -->
+		</Console>
+		<!-- 这个异常信息输出控制台的配置(打印异常信息) -->
+		<Console name="ExceptionConsole" target="SYSTEM_ERR">
+			<!--控制台只输出level及以上级别的信息 -->
+			<!--onMatch:DENY/ACCEPT(是否接受匹配) -->
+			<!--onMismatch:DENY/NEUTRAL(是否接受其他高于level的级别) -->
+			<ThresholdFilter level="debug" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<!--输出日志的格式 -->
+			<!-- 彩色打印 -->
+			<PatternLayout
+				pattern="%highlight{&lt;%-6t&gt;}%highlight{[%-6p]}||  %-12d |\t\t\t\t\t\t\t\t——&gt;\t%highlight{%-m &lt;————————————&gt;%x%n}" />
+			<!--黑白打印 -->
+			<!-- <PatternLayout pattern="&lt;%-6t&gt;[%-6p]|| %-12d{HH:mm:ss SSS} 
+				|\t\t\t\t\t\t\t\t——&gt;\t%-m &lt;————————————&gt;%x%n" /> -->
+		</Console>
+		<!-- 这个异常堆栈信息输出控制台的配置(打印异常的堆栈信息) -->
+		<Console name="ExcStackTraceConsole" target="SYSTEM_ERR">
+			<!--控制台只输出level及以上级别的信息 -->
+			<!--onMatch:DENY/ACCEPT(是否接受匹配) -->
+			<!--onMismatch:DENY/NEUTRAL(是否接受其他高于level的级别) -->
+			<ThresholdFilter level="debug" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<!--输出日志的格式 -->
+			<!-- 彩色打印 -->
+			<PatternLayout pattern="%highlight{%m}%n" />
+			<!--黑白打印 -->
+			<!-- <PatternLayout pattern="%m%n" /> -->
+		</Console>
+		<!-- 这个框架信息的输出(打印框架输出的信息) -->
+		<Console name="FrameWorkConsole" target="SYSTEM_ERR">
+			<!--控制台只输出level及以上级别的信息 -->
+			<!--onMatch:DENY/ACCEPT(是否接受匹配) -->
+			<!--onMismatch:DENY/NEUTRAL(是否接受其他高于level的级别) -->
+			<ThresholdFilter level="debug" onMatch="ACCEPT"
+				onMismatch="DENY" />
+			<!--输出日志的格式 -->
+			<!-- 彩色打印 -->
+			<PatternLayout
+				pattern="%highlight{&lt;%-6t&gt;}%d%highlight{[%-6p]}\t%highlight{  %l}\t——&gt;\t%highlight{%m}%n" />
+			<!--黑白打印 -->
+			<!-- <PatternLayout pattern="%m%n" /> -->
+		</Console>
+		<!--文件输出滚动信息【滚动信息】 -->
+		<!-- 这个会打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档 -->
+		<RollingFile name="RollingFile"
+			fileName="target/rollinglogs/log.log"
+			filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout
+				pattern="&lt;%-6t&gt;[%-6p]||  %-12d{HH:mm:ss SSS} |\t\t\t\t\t\t\t\t——&gt;\t%-m &lt;————————————&gt;%x%n\t\t==  %l%n" />
+			<SizeBasedTriggeringPolicy size="50MB" />
+			<!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 -->
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+		<RollingFile name="ExceptionRollingFile"
+			fileName="target/rollinglogs/exceptionlog.log"
+			filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout
+				pattern="&lt;%-6t&gt;[%-6p]||  %-12d{HH:mm:ss SSS} |\t\t\t\t\t\t\t\t——&gt;\t%-m &lt;————————————&gt;%x%n" />
+			<SizeBasedTriggeringPolicy size="50MB" />
+			<!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 -->
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+		<RollingFile name="ExcStackTraceRollingFile"
+			fileName="target/rollinglogs/exceptionlog.log"
+			filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout pattern="%m%n" />
+			<SizeBasedTriggeringPolicy size="50MB" />
+			<!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了20 -->
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+		<!--文件输出运行缓存信息【运行缓存信息】 -->
+		<!--文件会打印出所有信息，这个log每次运行程序会自动清空，由append属性决定，这个也挺有用的，适合临时测试用 -->
+		<File name="CacheFile" fileName="target/cachelogs/log.log"
+			append="false">
+			<PatternLayout
+				pattern="&lt;%-6t&gt;[%-6p]||  %-12d{HH:mm:ss SSS} |\t\t\t\t\t\t\t\t——&gt;\t%-m &lt;————————————&gt;%x%n\t\t==  %l%n" />
+		</File>
+		<File name="ExceptionCacheFile"
+			fileName="target/cachelogs/exceptionlog.log" append="false">
+			<PatternLayout
+				pattern="&lt;%-6t&gt;[%-6p]||  %-12d{HH:mm:ss SSS} |\t\t\t\t\t\t\t\t——&gt;\t%-m &lt;————————————&gt;%x%n" />
+		</File>
+		<File name="ExcStackTraceCacheFile"
+			fileName="target/cachelogs/exceptionlog.log" append="false">
+			<PatternLayout pattern="%m%n" />
+		</File>
+	</appenders>
+	<!--然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
+	<loggers>
+		<!--建立一个默认的root的logger(打印框架信息) -->
+		<root level="debug">
+			<appender-ref ref="FrameWorkConsole" />
+		</root>
+		<!-- 打印普通信息的Logger -->
+		<logger name="Logger" level="debug" additivity="false">
+			<appender-ref ref="Console" />
+			<appender-ref ref="RollingFile" />
+			<appender-ref ref="CacheFile" />
+		</logger>
+		<!-- 打印异常信息的Logger -->
+		<logger name="ExceptionLogger" level="info" additivity="false">
+			<appender-ref ref="ExceptionConsole" />
+			<appender-ref ref="ExceptionRollingFile" />
+			<appender-ref ref="ExceptionCacheFile" />
+		</logger>
+		<!-- 打印异常信息的Logger【堆栈信息】 -->
+		<logger name="ExcStackTraceLogger" level="info"
+			additivity="false">
+			<appender-ref ref="ExcStackTraceConsole" />
+			<appender-ref ref="ExcStackTraceRollingFile" />
+			<appender-ref ref="ExcStackTraceCacheFile" />
+		</logger>
+	</loggers>
+</configuration>
